@@ -11,7 +11,6 @@
 #include <math.h>
 #include <time.h>
 
-#define MAX_DIM 2
 #define COMPARE(a, b) ((a > b) ? a : b)
 
 // kdtree의 node 자료구조 정의.

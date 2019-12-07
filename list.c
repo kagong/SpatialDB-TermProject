@@ -8,6 +8,18 @@ Nptr make_list(){
     new -> next = NULL;
     return new;
 }
+void push(Nptr head, void* data_node,double dist){
+    if(dist != -1){
+        printf("this function(list push) do not use dist please pass -1 , now : %lf\n",dist);
+        return ;
+    }
+    Nptr new = (Nptr)malloc(sizeof(Node));
+    new -> data_node = data_node;
+    new -> dist = dist;
+    new -> next = NULL;
+    new -> next = head -> next ;
+    head ->next = new;
+}
 void insert_ordered(Nptr head,void* data_node ,double dist){
     Nptr temp = head;
     Nptr new = (Nptr)malloc(sizeof(Node));
@@ -15,7 +27,7 @@ void insert_ordered(Nptr head,void* data_node ,double dist){
     new -> dist = dist;
     new -> next = NULL;
     while(temp -> next != NULL){
-        if(temp -> dist > dist){
+        if(temp ->next ->dist > dist){
             new -> next = temp -> next;
             temp -> next = new;
             return ;
@@ -82,4 +94,11 @@ void free_list(Nptr head){
     }
     free(head);
 }
-
+int list_len(Nptr head){
+    int i = 0;
+    while(head -> next){
+        i++;
+        head = head -> next;
+    }
+    return i;
+}
