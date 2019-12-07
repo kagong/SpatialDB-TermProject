@@ -48,16 +48,18 @@ Nptr pop(Nptr head){
     
 }
 Nptr delete_tail(Nptr head){
-    Nptr temp = NULL;
+    Nptr temp = NULL,temp2=NULL;
     if(head -> next == NULL){
         printf("error! head empty -delete\n");
         return NULL;
     }
     temp = head ;
-    while(temp -> next != NULL){
+    while(temp ->next ->next != NULL){
         temp = temp -> next;
     }
-    return temp;
+    temp2 = temp->next;
+    temp -> next = NULL;
+    return temp2;
 }
 double top_dist(Nptr head){
     Nptr temp = NULL;

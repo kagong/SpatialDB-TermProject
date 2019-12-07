@@ -1,5 +1,6 @@
 #include "bruteForce.h"
 #include<stdio.h>
+#include<stdlib.h>
 #include<time.h>
 #include "list.h"
 //extern double dist(double,double,double,double);
@@ -13,23 +14,24 @@ void bruteForce(const DATA* data,QNODE* query){
     int i ;
     for(i = 0 ; i < RNUM ; i++){
         result = make_list();
-        printf("brute_force %lf range query\n",query->range[i]);
+        printf("\tbrute_force %lf range query\n",query->range[i]);
         start_point = clock();
         obj_ref_count = rQuery(data,query->x_r,query->y_r,query->range[i]);
         end_point = clock();
-        printf("Exe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
-        printf("reference count : %d\n\n\n",obj_ref_count);
-//        print_list(result);
+        printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
+        printf("\t\treference count : %d\n\n\n",obj_ref_count);
+        print_list(result);
         free_list(result);
     }
     for(i = 0 ; i < KNUM ; i++){
         result = make_list();
-        printf("brute_force %dnn query\n",query->k[i]);
+        printf("\tbrute_force %dnn query\n",query->k[i]);
         start_point = clock();
         obj_ref_count = knnQuery(data,query->x_k,query->y_k,query->k[i]);
         end_point = clock();
-        printf("Exe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
-        printf("reference count : %d\n\n\n",obj_ref_count);
+        printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
+        printf("\t\treference count : %d\n\n\n",obj_ref_count);
+        print_list(result);
         free_list(result);
     }
 }
@@ -56,11 +58,10 @@ static int knnQuery(const DATA* head,double x,double y, int k){
         if(list_len(result) < k)
             insert_ordered(result,temp,dis);
         else if(tail_dist(result) > dis){
-            delete_tail(result);
+            free(delete_tail(result));
             insert_ordered(result,temp,dis);
         }
         temp = temp -> link;
-        printf("%d\n",ref_cnt);
     }
     return ref_cnt;
 }
