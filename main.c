@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include "bruteForce.h"
 #include "define.h"
-
+#include "KDTree.h"
 DATA* data[FileNum];
 static DATA* makeNode(double x,double y);
 static void listFree(DATA* head);
@@ -36,9 +36,10 @@ int main(){
     for(i = 0 ; i < FileNum ; i++){
         printf("###%s###\n",filename[i]+8);
         bruteForce((const DATA*)data[i],query);
-        //KDtree(data[i],query);
+        KDtree(data[i],query);
         //Rtree(data[i],query);
     }
+    free(query);
     for(i = 0 ; i < FileNum ; i++)
         listFree(data[i]);
     return 0;

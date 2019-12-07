@@ -4,13 +4,13 @@
 //
 //  Created by Bigdata LAB on 2019/11/05.
 //
-
+#include "KDTree.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
 #include <time.h>
-
+#include "list.h"
 #define COMPARE(a, b) ((a > b) ? a : b)
 
 // kdtree의 node 자료구조 정의.
@@ -21,18 +21,6 @@ struct kd_node_t
 };
 
 // 거리함수 정의.
-inline double dist(struct kd_node_t *a, struct kd_node_t *b, int dim)
-{
-    double t, d = 0;
-    while (dim--)
-    {
-        t = a->x[dim] - b->x[dim];
-        d = d + t * t;
-    }
-    
-    return d;
-}
-
 // swap 함수 정의.
 inline void swap(struct kd_node_t *x, struct kd_node_t *y)
 {
@@ -91,20 +79,40 @@ struct kd_node_t make_kdtree(struct kd_node_t *t, int len, int i, int dim)
     return n;
 }
 
-void rangeQuery(struct kd_node_t *p, double radius)
-{
-    //range query의 질의 조건인 질의 포인트와 질의 반경
+static int rQuery(double x,double y, double r){
+}
+static int knnQuery(double x,double y, int k){
 }
 
-void kNNquery(struct kd_node_t *p, int K)
-{
-    //kNN query의 질의조건인 질의 포인트와 최근접이웃 개수
-    
-}
-
-
-int main(void)
-{
-  
-    return 0;
+void KDtree(const DATA* data,QNODE* query){
+    int obj_ref_count;
+    int i ;
+    for(i = 0 ; i < RNUM ; i++){
+        result = make_list();
+        printf("\tKDtree %lf range query\n",query->range[i]);
+        printf("\t\tpoint = (%lf, %lf)\n",query->x_r,query->y_r);
+        start_point = clock();
+        obj_ref_count = rQuery(query->x_r,query->y_r,query->range[i]);
+        end_point = clock();
+#if ResultPrint == 1
+        print_list(result,print_data);
+#endif
+        printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
+        printf("\t\treference count : %d\n\n\n",obj_ref_count);
+        free_list(result);
+    }
+    for(i = 0 ; i < KNUM ; i++){
+        result = make_list();
+        printf("\tKDtree %dnn query\n",query->k[i]);
+        printf("\t\tpoint = (%lf, %lf)\n",query->x_k,query->y_k);
+        start_point = clock();
+        obj_ref_count = knnQuery(query->x_k,query->y_k,query->k[i]);
+        end_point = clock();
+#if ResultPrint == 1
+        print_list(result,print_data);
+#endif
+        printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
+        printf("\t\treference count : %d\n\n\n",obj_ref_count);
+        free_list(result);
+    }
 }
