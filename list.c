@@ -23,7 +23,7 @@ void push(Nptr head, void* data_node,double dist){
 void insert_ordered(Nptr head,void* data_node ,double dist){
     Nptr temp = head;
     Nptr new = (Nptr)malloc(sizeof(Node));
-    new -> data_node = NULL;
+    new -> data_node = data_node;
     new -> dist = dist;
     new -> next = NULL;
     while(temp -> next != NULL){
@@ -103,4 +103,13 @@ int list_len(Nptr head){
         head = head -> next;
     }
     return i;
+}
+void print_list(Nptr head,void (*fun)(void*)){
+    printf("\t\tresult : ");
+    head = head ->next;
+    while(head ){
+        fun(head ->data_node);
+        head = head ->next;
+    }
+    printf("\n");
 }

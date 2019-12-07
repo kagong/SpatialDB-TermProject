@@ -10,7 +10,7 @@ clean :
 	rm -f $(OBJS) $(TARGET)
 
 $(TARGET): $(OBJS)
-	$(CC) -o $@ $(OBJS)
+	$(CC) -o $@ $(OBJS) -lm
 
 main.o: bruteForce.h define.h
 bruteForce.o : list.h define.h

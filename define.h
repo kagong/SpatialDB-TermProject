@@ -1,5 +1,6 @@
 #ifndef DEFINE_H
 #define DEFINE_H
+#define ResultPrint 0
 #define FileNum 3
 #define MAX 500
 #define RNUM 6
@@ -31,5 +32,5 @@ typedef struct data_node {
     query -> x_k = (rand()%(MAX*100))/100.0;\
     query -> x_k = (rand()%(MAX*100))/100.0;\
 }while(0)
-#define dist(x1,y1,x2,y2) (((x2)-(x1))*((x2)-(x1))+((y2)-(y1))*((y2)-(y1)))
+#define dist(x1,y1,x2,y2) (sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)))
 #endif

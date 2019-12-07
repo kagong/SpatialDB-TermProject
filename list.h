@@ -14,4 +14,5 @@ double top_dist(Nptr head);
 double tail_dist(Nptr head);
 void free_list(Nptr head);
 int list_len(Nptr head);
+void print_list(Nptr head,void (*fun)(void*));
 #endif
