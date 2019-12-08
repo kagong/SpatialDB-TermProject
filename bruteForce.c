@@ -74,5 +74,5 @@ static int knnQuery(const DATA* head,double x,double y, int k){
 }
 void print_data(void* data_node){
     DATA* temp = (DATA*)data_node;
-    printf("(%lf, %lf) ",temp->x,temp->y);
+    printf("(%lf,%lf) ",temp->x,temp->y);
 }

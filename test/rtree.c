@@ -23,7 +23,7 @@
 #include <assert.h>
 #include <float.h>
 #include <math.h>
-
+#include <limits.h>
 #include "rtree.h"
 
 #define        METHODS        1
@@ -995,7 +995,7 @@ int RTreeSearch( RTREENODE *node, RTREEMBR *rc, pfnSearchHitCallback pfnSHCB, vo
         for (i=0; i<LEAFCARD; i++)
         {
             if (node->branch[i].child && RTreeOverlap(rc, &node->branch[i].mbr))
-            {
+            {               
                 hitCount++;
 
                 /* call the user-provided callback and return if callback wants to terminate search early */
@@ -1009,6 +1009,59 @@ int RTreeSearch( RTREENODE *node, RTREEMBR *rc, pfnSearchHitCallback pfnSHCB, vo
     return hitCount;
 }
 
+/**
+ * Search in an index tree or subtree for all data rectangles that overlap the argument rectangle.
+ * Return the number of qualifying data rects.
+ */
+
+/*
+int RTreeRangeSearch( RTREENODE *node, RTREEMBR *rc, pfnSearchHitCallback pfnSHCB, void* pfnParam)
+{
+    int hitCount = 0;
+    int i,j;
+
+    assert(node && rc);
+    assert(node->level >= 0);
+    
+    if (node->level > 0)     {
+        for (i=0; i<NODECARD; i++){
+            if (node->branch[i].child ){
+                double x_r = rc -> bound[0],y_r = rc -> bound[1],r = rc -> bound[2];
+                double min_x = fabs(node -> branch[i].mbr.bound[0]-x_r) < fabs(node -> branch[i].mbr.bound[3] - x_r) ?
+                    node -> branch[i].mbr.bound[0] : node -> branch[i].mbr.bound[3] ;
+                double min_y = fabs(node -> branch[i].mbr.bound[1]-y_r) < fabs(node -> branch[i].mbr.bound[4] - y_r) ?
+                    node -> branch[i].mbr.bound[1] : node -> branch[i].mbr.bound[4] ;
+                double dist = 0;
+
+                dist = sqrt(pow(min_x - x_r,2) + pow(min_y-y_r,2) );
+                if(dist <= r)
+                    hitCount += RTreeRangeSearch(node->branch[i].child, rc, pfnSHCB, pfnParam);
+                
+            }
+        }
+    }
+    else     {
+#pragma warning(push)    
+#pragma warning( disable : 4311 )
+        for (i=0; i<LEAFCARD; i++)
+        {
+            if (node->branch[i].child ){
+                double dist = sqrt(pow(node->branch[i].mbr.bound[0] - rc -> bound[0],2) + pow( node->branch[i].mbr.bound[1] - rc -> bound[1],2)); 
+                if(dist <= rc -> bound[2]){
+                     hitCount++;
+
+
+                                    if(pfnSHCB && ! pfnSHCB((int)node->branch[i].child, pfnParam) )
+                        return hitCount; 
+
+                }
+            }
+        }
+#pragma warning(pop)
+    }
+    return hitCount;
+}
+*/
 /** 
  * Insert a data rectangle into an index structure.
  * RTreeInsertRect provides for splitting the root;

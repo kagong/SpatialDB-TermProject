@@ -210,5 +210,5 @@ void KDtree(const DATA* data,QNODE* query,int n){
 }
 void print_data_kd(void* data_node){
     DATA* temp = (DATA*)data_node;
-    printf("(%lf, %lf) ",temp->x,temp->y);
+    printf("(%lf,%lf) ",temp->x,temp->y);
 }
