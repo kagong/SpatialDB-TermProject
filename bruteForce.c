@@ -5,11 +5,11 @@
 #include<math.h>
 #include "list.h"
 //extern double dist(double,double,double,double);
-clock_t start_point, end_point;
+static clock_t start_point, end_point;
 static int rQuery(const DATA* head,double x,double y, double r);
 static int knnQuery(const DATA* head,double x,double y, int k);
 void print_data(void* data_node);
-Nptr result = NULL;
+static Nptr result = NULL;
 void bruteForce(const DATA* data,QNODE* query){
     int obj_ref_count;
     int i ;

@@ -8,10 +8,11 @@ DATA* data[FileNum];
 static DATA* makeNode(double x,double y);
 static void listFree(DATA* head);
 int main(){
-    int i,j;
+    int i,j,n=0;
     char* filename[3] = {FileName_1,FileName_2,FileName_3};
     QNODE* query = NULL;
     srand(time(NULL));
+    make_query(query);
     for(i = 0 ; i < FileNum ; i++){
         double x,y;
         FILE* fp = NULL;
@@ -21,7 +22,9 @@ int main(){
             return -1;
         }
         data[i] = (DATA*)malloc(sizeof(DATA));
+        n=0;
         while(fscanf(fp,"%lf, %lf",&x,&y) != -1){
+            n++;
             DATA* temp = NULL;
             temp = makeNode(x,y);
             temp ->link = data[i] ->link;
@@ -31,17 +34,20 @@ int main(){
             printf("file open error\n");
             return -1;
         }
-    }
-    make_query(query);
-    for(i = 0 ; i < FileNum ; i++){
         printf("###%s###\n",filename[i]+8);
+        #if EMode > 0
         bruteForce((const DATA*)data[i],query);
-        KDtree(data[i],query);
-        //Rtree(data[i],query);
+            #if EMode > 1
+            KDtree(data[i],query,n);
+                #if EMode > 2
+                Rtree(data[i],query);
+                #endif 
+            #endif 
+        #endif 
+        listFree(data[i]);
+
     }
     free(query);
-    for(i = 0 ; i < FileNum ; i++)
-        listFree(data[i]);
     return 0;
 }
 static DATA* makeNode(double x,double y){
@@ -52,6 +58,7 @@ static DATA* makeNode(double x,double y){
     return temp;
 }
 static void listFree(DATA* head){
+    int i = 0;
     while(head -> link != NULL){
         DATA* temp = head -> link -> link;
         free(head -> link);

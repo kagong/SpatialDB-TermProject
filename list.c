@@ -39,7 +39,7 @@ void insert_ordered(Nptr head,void* data_node ,double dist){
 Nptr pop(Nptr head){
     Nptr temp = NULL;
     if(head -> next == NULL){
-        printf("error! head empty -pop\n");
+       // printf("error! head empty -pop\n");
         return NULL;
     }
     temp = head -> next;
