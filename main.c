@@ -9,6 +9,7 @@ static DATA* makeNode(double x,double y);
 static void listFree(DATA* head);
 int main(){
     int i,j,n=0;
+    int target;
     char* filename[3] = {FileName_1,FileName_2,FileName_3};
     QNODE* query = NULL;
     srand(time(NULL));
@@ -23,12 +24,17 @@ int main(){
         }
         data[i] = (DATA*)malloc(sizeof(DATA));
         n=0;
+        target = rand()%1000000;
         while(fscanf(fp,"%lf, %lf",&x,&y) != -1){
             n++;
             DATA* temp = NULL;
             temp = makeNode(x,y);
             temp ->link = data[i] ->link;
             data[i] ->link = temp;
+            if(n == target){
+                query -> x_r = query -> x_k = x;
+                query -> y_r = query -> y_k = y;
+            }
         }
         if(fclose(fp) != 0){
             printf("file open error\n");

@@ -85,15 +85,19 @@ struct kd_node_t* make_kdtree(struct kd_node_t *t, int len, int i, int dim)
 static int rQuery(struct kd_node_t* root,double x_r,double y_r, double r){
     int obj_ref = 0;
     int dim = 0;
-    int x[MAX_DIM] = {x_r,y_r};
+    double x[MAX_DIM] = {x_r,y_r};
     Nptr temp;
     push(nodeQ,root,-1);
     while(temp = pop(nodeQ)){
+        double dis;
         ++obj_ref;
         struct kd_node_t* kdnode = (struct kd_node_t*)(temp -> data_node);
         dim = kdnode -> dim;
-        if(dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]) <= r)
-            push(result,temp -> data_node,-1);
+        if((dis = dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]) )<= r){
+          //  printf("%lf %lf %lf %lf ",kdnode -> x[0],kdnode -> x[1],x[0],x[1]);
+            //printf("%lf\n",dis);
+            insert_ordered(result,temp -> data_node,dis);
+        }
         if(kdnode -> left){
             if(x[dim] <= kdnode ->x[dim])
                 push(nodeQ,kdnode->left,-1);
@@ -181,9 +185,7 @@ void KDtree(const DATA* data,QNODE* query,int n){
         start_point = clock();
         obj_ref_count = rQuery(root,query->x_r,query->y_r,query->range[i]);
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data_kd);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         
@@ -198,9 +200,7 @@ void KDtree(const DATA* data,QNODE* query,int n){
         start_point = clock();
         obj_ref_count = knnQuery(root,query->x_k,query->y_k,query->k[i]);
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data_kd);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         free_list(nodeQ);

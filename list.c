@@ -1,5 +1,6 @@
 #include<stdio.h>
 #include<stdlib.h>
+#include "define.h"
 #include "list.h"
 Nptr make_list(){
     Nptr new = (Nptr)malloc(sizeof(Node));
@@ -105,11 +106,18 @@ int list_len(Nptr head){
     return i;
 }
 void print_list(Nptr head,void (*fun)(void*)){
+#if ResultPrint == 1
+    int i = 0;
     printf("\t\tresult : ");
     head = head ->next;
-    while(head ){
+    while(head || i < PRINT_MAX){
         fun(head ->data_node);
         head = head ->next;
+        i++;
     }
     printf("\n");
+#endif
+#if ResultPrint == 0
+    printf("\t\treulst number : %d\n",list_len(head));
+#endif 
 }

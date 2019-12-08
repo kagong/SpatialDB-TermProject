@@ -12,8 +12,28 @@
 #include "list.h"
 static Nptr result = NULL;
 
+static RTREEMBR *rects ;
 static int NODECARD = MAXCARD;
 static int LEAFCARD = MAXCARD;
+static double mid3(double x1,double x2, double x3){
+    double min1 = x1 < x2 ? x1 : x2;
+    if(x1 <= x2 )
+        if(x2 <= x3)
+            return x2;
+        else if(x1 <= x3)//x3 < x2
+            return x3;
+        else //x3<x1
+            return x1;
+    else//x1>x2
+        if(x1 <= x3)
+            return x1;
+        else if(x2 < x3)//x3 < x1
+            return x3;
+        else //x3<x1
+            return x2;
+
+
+}
 static int RTreeRangeSearch( RTREENODE *node, const double x_r, const double y_r, const double r)
 {
     /* Fix not yet tested. */
@@ -28,10 +48,8 @@ static int RTreeRangeSearch( RTREENODE *node, const double x_r, const double y_r
         for (i=0; i<NODECARD; i++){
             if (node->branch[i].child ){
                 ++obj_ref;
-                double min_x = fabs(node -> branch[i].mbr.bound[0]-x_r) < fabs(node -> branch[i].mbr.bound[3] - x_r) ?
-                    node -> branch[i].mbr.bound[0] : node -> branch[i].mbr.bound[3] ;
-                double min_y = fabs(node -> branch[i].mbr.bound[1]-y_r) < fabs(node -> branch[i].mbr.bound[4] - y_r) ?
-                    node -> branch[i].mbr.bound[1] : node -> branch[i].mbr.bound[4] ;
+                double min_x = mid3(node -> branch[i].mbr.bound[0],node -> branch[i].mbr.bound[3],x_r) ;
+                double min_y = mid3(node -> branch[i].mbr.bound[1],node -> branch[i].mbr.bound[4],y_r) ;
                 double dist = 0;
 
                 dist = sqrt(pow(min_x - x_r,2) + pow(min_y-y_r,2) );
@@ -43,22 +61,20 @@ static int RTreeRangeSearch( RTREENODE *node, const double x_r, const double y_r
     }
     else /* this is a leaf node */
     {
-#pragma warning(push)    /* C4311 */
-#pragma warning( disable : 4311 )
         for (i=0; i<LEAFCARD; i++)
         {
             if (node->branch[i].child ){
                 ++obj_ref;
                 double dist = sqrt(pow(node->branch[i].mbr.bound[0] - x_r,2) + pow( node->branch[i].mbr.bound[1] - y_r,2)); 
                 if(dist <= r){
-                    printf("%lf %lf \n",node ->branch[i].mbr.bound[0],node ->branch[i].mbr.bound[1]);
+                    insert_ordered(result,&(node->branch[i].mbr),dist);
                 }
             }
         }
-#pragma warning(pop)
     }
     return obj_ref;
 }
+
 static int RTreeKnnSearch( RTREENODE *node, const double x_k, const double y_k, const int k)
 {
     int obj_ref = 0;
@@ -79,14 +95,14 @@ static int RTreeKnnSearch( RTREENODE *node, const double x_k, const double y_k, 
             for (i=0; i<NODECARD; i++){
                 if (tempN->branch[i].child ){
                     ++obj_ref;
-                    double min_x = fabs(tempN -> branch[i].mbr.bound[0]-x_k) < fabs(tempN -> branch[i].mbr.bound[3] - x_k) ?
-                        node -> branch[i].mbr.bound[0] : tempN -> branch[i].mbr.bound[3] ;
-                    double min_y = fabs(tempN -> branch[i].mbr.bound[1]-y_k) < fabs(tempN -> branch[i].mbr.bound[4] - y_k) ?
-                        tempN -> branch[i].mbr.bound[1] : tempN -> branch[i].mbr.bound[4] ;
+                    double min_x = mid3(tempN -> branch[i].mbr.bound[0],tempN -> branch[i].mbr.bound[3],x_k) ;
+                    double min_y = mid3(tempN -> branch[i].mbr.bound[1],tempN -> branch[i].mbr.bound[4],y_k) ;
                     double mindist = 0;
 
                     mindist = sqrt(pow(min_x - x_k,2) + pow(min_y-y_k,2) );
-                    if(list_len(result) < k || mindist < tail_dist(result)) // upward, pruning
+                    if(list_len(result) < k) 
+                        heap_insert(&nodeQ,tempN->branch[i].child,mindist);
+                    else if(mindist < tail_dist(result)) // upward, pruning
                         heap_insert(&nodeQ,tempN->branch[i].child,mindist);
 
                 }
@@ -94,8 +110,6 @@ static int RTreeKnnSearch( RTREENODE *node, const double x_k, const double y_k, 
         }
         else /* this is a leaf node */
         {
-#pragma warning(push)    /* C4311 */
-#pragma warning( disable : 4311 )
             for (i=0; i<LEAFCARD; i++)
             {
                 if (tempN->branch[i].child ){
@@ -110,7 +124,6 @@ static int RTreeKnnSearch( RTREENODE *node, const double x_k, const double y_k, 
                     
                 }
             }
-#pragma warning(pop)
         }
         free(temp);
     }
@@ -153,9 +166,7 @@ int Rtree(const DATA* data,QNODE* query,int n){
         start_point = clock();
         obj_ref_count = RTreeRangeSearch(root,query->x_r,query->y_r,query->range[i]);
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data_rtree);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         
@@ -169,14 +180,13 @@ int Rtree(const DATA* data,QNODE* query,int n){
         obj_ref_count = RTreeKnnSearch(root,query->x_k,query->y_k,query->k[i]);
         
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data_rtree);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         free_list(result);
     } 
     RTreeDestroy (root);
+    free(rects);
     return 0;
 
 }

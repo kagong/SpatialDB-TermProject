@@ -1,12 +1,13 @@
 #ifndef DEFINE_H
 #define DEFINE_H
-#define ResultPrint 1
+#define ResultPrint 1 //0 = number of result print, 1 = result print
+#define PRINT_MAX 100 //number of maximum result was printed
 #define EMode 3 //0 1 2 3 (no execute,brute,brute - KDTree , brute - KDTree - Rtree)
-#define FileNum 1
-#define MAX 500
-#define RNUM 6 //default 6
-#define KNUM 11 //default 11
-#define MAX_DIM 2
+#define FileNum 3 //number of input file 
+#define MAX 500 //data's each axis size
+#define RNUM 6 //default 6 , range query number
+#define KNUM 11 //default 11, knn query number
+#define MAX_DIM 2 //max dimension
 #define FileName_1 "dataset/gaussian_dataset.txt"
 #define FileName_2 "dataset/clustered_dataset.txt"
 #define FileName_3 "dataset/uniformed_dataset.txt"
@@ -28,10 +29,7 @@ typedef struct data_node {
     query->k[0] = 1;\
     for(j = 1 ; j < KNUM ; j++)\
         query->k[j] = j*10;\
-    query -> x_r = (rand()%(MAX*100))/100.0;\
-    query -> y_r = (rand()%(MAX*100))/100.0;\
-    query -> x_k = (rand()%(MAX*100))/100.0;\
-    query -> y_k = (rand()%(MAX*100))/100.0;\
+    query -> x_r = query -> y_r = query -> x_k = query -> y_k = 250;\
 }while(0)
 #define dist(x1,y1,x2,y2) (sqrt((x2-x1)*(x2-x1)+(y2-y1)*(y2-y1)))
 #endif

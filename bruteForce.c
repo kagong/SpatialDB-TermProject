@@ -20,9 +20,7 @@ void bruteForce(const DATA* data,QNODE* query){
         start_point = clock();
         obj_ref_count = rQuery(data,query->x_r,query->y_r,query->range[i]);
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         free_list(result);
@@ -34,9 +32,7 @@ void bruteForce(const DATA* data,QNODE* query){
         start_point = clock();
         obj_ref_count = knnQuery(data,query->x_k,query->y_k,query->k[i]);
         end_point = clock();
-#if ResultPrint == 1
         print_list(result,print_data);
-#endif
         printf("\t\tExe time : %f sec\n", ((double)(end_point - start_point)/CLOCKS_PER_SEC));
         printf("\t\treference count : %d\n\n\n",obj_ref_count);
         free_list(result);
