@@ -40,7 +40,7 @@ int main(){
             #if EMode > 1
             KDtree(data[i],query,n);
                 #if EMode > 2
-                Rtree(data[i],query);
+                Rtree(data[i],query,n);
                 #endif 
             #endif 
         #endif 

@@ -1,8 +1,8 @@
 #ifndef DEFINE_H
 #define DEFINE_H
-#define ResultPrint 0
-#define EMode 2 //0 1 2 3 (no execute,brute,brute - KDTree , brute - KDTree - Rtree)
-#define FileNum 3
+#define ResultPrint 1
+#define EMode 3 //0 1 2 3 (no execute,brute,brute - KDTree , brute - KDTree - Rtree)
+#define FileNum 1
 #define MAX 500
 #define RNUM 6 //default 6
 #define KNUM 11 //default 11

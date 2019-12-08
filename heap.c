@@ -59,11 +59,14 @@ HNODE* heap_pop(HNODE** head){
     unsigned int n,depth = 0;
     if(*head == NULL)
         return NULL;
-    if(!((*head) -> left ) && !((*head) -> right ) )
-        return *head;
+    if(!((*head) -> left ) && !((*head) -> right ) ){
+        retval = *head;
+        *head = NULL;
+        --nid;
+        return retval;
+    }
     //find last_node
     n=nid;
-    printf("ret = %lf\n",retval->dist);
     for(;n ^ 1 != 0; n >>= 1)
         depth++;//top = 0
     n = 1 << (depth-1);
@@ -131,6 +134,14 @@ int main(){
         heap_insert(&head,NULL,arr[i]);
 
     for(i = 0 ; i < 10 ; i++){
+        HNODE* temp = heap_pop(&head);
+        printf("%lf\n",temp -> dist);
+        free(temp);
+    }
+        printf("\n\n");
+    for(i = 4 ; i < 10 ; i++)
+        heap_insert(&head,NULL,arr[i]);
+    for(i = 4 ; i < 10 ; i++){
         HNODE* temp = heap_pop(&head);
         printf("%lf\n",temp -> dist);
         free(temp);
