@@ -67,7 +67,7 @@ static int RTreeRangeSearch( RTREENODE *node, const double x_r, const double y_r
                 ++obj_ref;
                 double dist = sqrt(pow(node->branch[i].mbr.bound[0] - x_r,2) + pow( node->branch[i].mbr.bound[1] - y_r,2)); 
                 if(dist <= r){
-                    insert_ordered(result,&(node->branch[i].mbr),dist);
+                    push(result,&(node->branch[i].mbr),-1);
                 }
             }
         }
@@ -158,7 +158,6 @@ int Rtree(const DATA* data,QNODE* query,int n){
 
     RTREENODE* root = RTreeCreate();
     RtreeBuild(data,&root,n);
-   // nhits = RTreeRangeSearch(root,&search_cir , MySearchCallback, 0);
     for(i = 0 ; i < RNUM ; i++){
         result = make_list();
         printf("\tRtree %lf range query\n",query->range[i]);

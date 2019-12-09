@@ -57,7 +57,7 @@ struct kd_node_t* find_median(struct kd_node_t *start, struct kd_node_t *end, in
                 store++;
             }
         swap(store, end - 1);
-        
+        return store;
         if(store->x[idx] == med->x[idx])
             return med;
         if (store > med) end = store;
@@ -93,22 +93,23 @@ static int rQuery(struct kd_node_t* root,double x_r,double y_r, double r){
         ++obj_ref;
         struct kd_node_t* kdnode = (struct kd_node_t*)(temp -> data_node);
         dim = kdnode -> dim;
-        if((dis = dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]) )<= r){
-          //  printf("%lf %lf %lf %lf ",kdnode -> x[0],kdnode -> x[1],x[0],x[1]);
-            //printf("%lf\n",dis);
-            insert_ordered(result,temp -> data_node,dis);
+        if(dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]) <= r){
+
+            push(result,temp->data_node,-1);
         }
         if(kdnode -> left){
             if(x[dim] <= kdnode ->x[dim])
                 push(nodeQ,kdnode->left,-1);
-            else if(x[dim] - kdnode -> x[dim] <= r)
+            else if((x[dim] - kdnode -> x[dim]) <= r)
                 push(nodeQ,kdnode->left,-1);
+
         }
         if(kdnode -> right){
             if(x[dim] >= kdnode ->x[dim])
                 push(nodeQ,kdnode->right,-1);
-            else if( kdnode -> x[dim] - x[dim] <= r)
+            else if( (kdnode -> x[dim] - x[dim]) <= r)
                 push(nodeQ,kdnode->right,-1);
+
         }
         free(temp);
     }
@@ -128,17 +129,18 @@ static int knnQuery(struct kd_node_t* root,double x_k,double y_k, int k){
         dis_1dim = temp -> dist;
         if(list_len(result) < k){
             dis = dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]);
+
             insert_ordered(result,kdnode,dis);
         }
         else if(tail_dist(result)<=dis_1dim){//pruning
-            --obj_ref;
             free(temp);
             continue;
         }
         else {
             dis = dist(kdnode -> x[0],kdnode -> x[1],x[0],x[1]);
             if(tail_dist(result)>dis){
-                free(delete_tail(result));
+                Nptr temp = delete_tail(result);
+                free(temp);
                 insert_ordered(result,kdnode,dis);
             }
         }
@@ -170,6 +172,8 @@ struct kd_node_t* KDtreebuild(const DATA* data,int n){
     head =node_list;
     return make_kdtree(node_list,n,0,2);
 }
+
+
 void KDtree(const DATA* data,QNODE* query,int n){
     int obj_ref_count;
     int i ;

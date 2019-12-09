@@ -107,13 +107,11 @@ int list_len(Nptr head){
 }
 void print_list(Nptr head,void (*fun)(void*)){
 #if ResultPrint == 1
-    int i = 0;
     printf("\t\tresult : ");
     head = head ->next;
-    while(head || i < PRINT_MAX){
+    while(head ){
         fun(head ->data_node);
         head = head ->next;
-        i++;
     }
     printf("\n");
 #endif
